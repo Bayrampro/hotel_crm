@@ -17,11 +17,11 @@ Source: "build\windows\runner\Release\*"; DestDir: "{app}"; Flags: recursesubdir
 
 [Icons]
 ; Основной ярлык
-Name: "{group}\Hotel CRM"; Filename: "{app}\hotel_crm.exe"
+Name: "{group}\Hotel CRM"; Filename: "{app}\hotel_crm_desktop.exe"
 ; Ярлык удаления
 Name: "{group}\Удалить Hotel CRM"; Filename: "{uninstallexe}"
 ; Ярлык на рабочем столе
-Name: "{commondesktop}\Hotel CRM"; Filename: "{app}\hotel_crm.exe"; Tasks: desktopicon
+Name: "{commondesktop}\Hotel CRM"; Filename: "{app}\hotel_crm_desktop.exe"; Tasks: desktopicon
 
 [Tasks]
 ; Установка ярлыка на рабочий стол
