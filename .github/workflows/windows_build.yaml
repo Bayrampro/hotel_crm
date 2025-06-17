@@ -1,0 +1,41 @@
+name: Build Windows App Installer
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build Installer (Windows)
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.32.4'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Enable Windows desktop
+        run: flutter config --enable-windows-desktop
+
+      - name: Build Windows app
+        run: flutter build windows --release
+
+      - name: Install Inno Setup
+        run: choco install innosetup --yes
+
+      - name: Build installer with Inno Setup
+        run: '"C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer_script.iss'
+
+      - name: Upload installer artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: HotelCRMInstaller
+          path: dist/installer/HotelCRMInstaller.exe

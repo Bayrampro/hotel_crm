@@ -1,10 +1,13 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hotel_crm/config/router/app_router.dart';
 import 'package:hotel_crm/config/theme/app_colors.dart';
+import 'package:hotel_crm/core/di/setup_locator.dart';
+import 'package:hotel_crm/core/services/pdf_service.dart';
 import 'package:hotel_crm/domain/entities/material_entity.dart';
 import 'package:hotel_crm/domain/entities/supplier_entity.dart';
 import 'package:hotel_crm/presentation/bloc/materials/materials_bloc.dart';
@@ -120,6 +123,43 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
     });
   }
 
+  void _generatePdf(TransactionEntity transaction) async {
+    final material = _allMaterials.firstWhere((m) => m.id == transaction.materialId);
+    final supplier = _allSuppliers.firstWhere((s) => s.id == transaction.supplierId);
+    
+    try {
+      await getIt<PdfService>().generateOperationPdf(
+        transaction: transaction,
+        material: material,
+        supplier: supplier,
+      );
+      
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              Platform.isWindows 
+                ? 'PDF сохранен в папке Документы/HotelCRM_PDFs'
+                : Platform.isMacOS
+                  ? 'PDF сгенерирован и открыт в Preview'
+                  : 'PDF готов к печати'
+            ),
+            backgroundColor: context.appColors.success,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Ошибка при генерации PDF: $e'),
+            backgroundColor: context.appColors.error,
+          ),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -192,6 +232,11 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                                   'Материал ID: ${t.materialId} | Поставщик ID: ${t.supplierId}',
                                 ),
                               ],
+                            ),
+                            trailing: IconButton(
+                              icon: const Icon(Icons.picture_as_pdf),
+                              onPressed: () => _generatePdf(t),
+                              tooltip: 'Сгенерировать PDF',
                             ),
                           ),
                         );

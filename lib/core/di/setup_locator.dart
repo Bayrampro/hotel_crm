@@ -12,6 +12,7 @@ import 'package:hotel_crm/domain/repositories/transactions_repo_impl.dart';
 import 'package:hotel_crm/presentation/bloc/materials/materials_bloc.dart';
 import 'package:hotel_crm/presentation/bloc/suppliers/suppliers_bloc.dart';
 import 'package:hotel_crm/presentation/bloc/transactions/transactions_bloc.dart';
+import 'package:hotel_crm/core/services/pdf_service.dart';
 
 final getIt = GetIt.instance;
 
@@ -24,6 +25,7 @@ void setupLocator() {
 
 void registerServices() {
   getIt.registerLazySingleton(() => LocalDatabase());
+  getIt.registerLazySingleton(() => PdfService());
 }
 
 void registerDataSources() {
