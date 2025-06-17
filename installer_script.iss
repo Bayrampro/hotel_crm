@@ -12,8 +12,7 @@ WizardStyle=modern
 ArchitecturesInstallIn64BitMode=x64
 
 [Files]
-; Копируем всё из сборки Flutter Windows
-Source: "build\windows\runner\Release\*"; DestDir: "{app}"; Flags: recursesubdirs createallsubdirs ignoreversion
+Source: "build\windows\x64\runner\Release\*"; DestDir: "{app}"; Flags: recursesubdirs createallsubdirs ignoreversion
 
 [Icons]
 ; Основной ярлык
